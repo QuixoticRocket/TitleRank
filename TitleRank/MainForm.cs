@@ -53,8 +53,22 @@ namespace TitleRank
             {
                 outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Create, FileAccess.Write);
             }
-            //process and output lines to output file, errors recorded in output textbox
 
+            //process and output lines to output file, errors recorded in output textbox (and continue on)
+
+            //track maximum number of ranks found
+            //track line number for error reporting
+
+            if(ignoreFirstLineCheckbox.Checked)
+            {
+                //read first line and ignore it
+            }
+
+            //write header to output (not with ranks yet.. those are added a the end)
+
+            //while not end of file read a line, process it, save the result
+
+            //return to first line of output and write out the header with the longest rank
             
         }
 
