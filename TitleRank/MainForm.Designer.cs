@@ -1,6 +1,6 @@
 ﻿namespace TitleRank
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.outputTextBox = new System.Windows.Forms.TextBox();
             this.processButton = new System.Windows.Forms.Button();
             this.inputFileNameLabel = new System.Windows.Forms.Label();
@@ -75,6 +76,7 @@
             this.inputFilenameTextbox.Name = "inputFilenameTextbox";
             this.inputFilenameTextbox.Size = new System.Drawing.Size(511, 22);
             this.inputFilenameTextbox.TabIndex = 0;
+            this.inputFilenameTextbox.Leave += new System.EventHandler(this.inputFilenameTextbox_Leave);
             // 
             // setInputFilenameButton
             // 
@@ -102,6 +104,7 @@
             this.outputFilenameTextbox.Name = "outputFilenameTextbox";
             this.outputFilenameTextbox.Size = new System.Drawing.Size(511, 22);
             this.outputFilenameTextbox.TabIndex = 2;
+            this.outputFilenameTextbox.Leave += new System.EventHandler(this.outputFilenameTextbox_Leave);
             // 
             // label1
             // 
@@ -115,7 +118,7 @@
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog";
-            this.openFileDialog.Filter = "\"Comma Seperated Values|*.csv|All Files|*.*\"";
+            this.openFileDialog.Filter = "Comma Seperated Values|*.csv|All Files|*.*";
             this.openFileDialog.Title = "Open File";
             this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog_FileOk);
             // 
@@ -123,7 +126,7 @@
             // 
             this.saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog_FileOk);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -136,11 +139,12 @@
             this.Controls.Add(this.inputFileNameLabel);
             this.Controls.Add(this.processButton);
             this.Controls.Add(this.outputTextBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(718, 370);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(718, 370);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Title Rank";
             this.ResumeLayout(false);
             this.PerformLayout();
