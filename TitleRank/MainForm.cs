@@ -29,7 +29,7 @@ namespace TitleRank
                 appendTextToUserLog("Input file does not exist. Aborting...");
             }
 
-            if (File.Exists(outputFilenameTextbox.Text))
+            if (!appendToFileCheckbox.Checked && File.Exists(outputFilenameTextbox.Text))
             {
                 //show warning - if no to overwrite then open savefiledialog??
                 var confirmation = MessageBox.Show("This file already exists and will be overwritten." + Environment.NewLine + "Are you sure you want to do this?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
@@ -42,10 +42,20 @@ namespace TitleRank
             }
         
 
-            //open files (1 read 1 write)
+            //open read file
             FileStream inputfileStream = File.OpenRead(inputFilenameTextbox.Text);
+
+
+
+            //read in data
+
+            //process data and get result
+
+            //write data to file
+
+            //open write file
             FileStream outputfileStream;
-            if(appendToFileCheckbox.Checked)
+            if (appendToFileCheckbox.Checked)
             {
                 outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Append, FileAccess.Write);
             }
@@ -54,23 +64,25 @@ namespace TitleRank
                 outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Create, FileAccess.Write);
             }
 
-            //process and output lines to output file, errors recorded in output textbox (and continue on)
+            
+
+            //process and output lines to return, errors recorded in output textbox (and continue on)
 
             //track maximum number of ranks found
             //track line number for error reporting
 
-            if(ignoreFirstLineCheckbox.Checked)
+            if (ignoreFirstLineCheckbox.Checked)
             {
                 //read first line and ignore it
             }
 
-            //write header to output (not with ranks yet.. those are added a the end)
-
             //while not end of file read a line, process it, save the result
 
-            //return to first line of output and write out the header with the longest rank
-            
+            //insert header to return at end with the longest rank
+
         }
+
+        private 
 
         private void openFileDialog_FileOk(object sender, CancelEventArgs e)
         {
