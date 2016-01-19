@@ -39,24 +39,28 @@
             this.label1 = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.ignoreFirstLineCheckbox = new System.Windows.Forms.CheckBox();
+            this.separationCharacterTextbox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // outputTextBox
             // 
-            this.outputTextBox.Location = new System.Drawing.Point(13, 98);
+            this.outputTextBox.Location = new System.Drawing.Point(13, 126);
             this.outputTextBox.Multiline = true;
             this.outputTextBox.Name = "outputTextBox";
+            this.outputTextBox.ReadOnly = true;
             this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.outputTextBox.Size = new System.Drawing.Size(675, 213);
+            this.outputTextBox.Size = new System.Drawing.Size(675, 185);
             this.outputTextBox.TabIndex = 999;
             this.outputTextBox.TabStop = false;
             // 
             // processButton
             // 
-            this.processButton.Location = new System.Drawing.Point(12, 69);
+            this.processButton.Location = new System.Drawing.Point(12, 97);
             this.processButton.Name = "processButton";
             this.processButton.Size = new System.Drawing.Size(675, 23);
-            this.processButton.TabIndex = 4;
+            this.processButton.TabIndex = 5;
             this.processButton.Text = "Process";
             this.processButton.UseVisualStyleBackColor = true;
             this.processButton.Click += new System.EventHandler(this.processButton_Click);
@@ -118,19 +122,55 @@
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog";
-            this.openFileDialog.Filter = "Comma Seperated Values|*.csv|All Files|*.*";
+            this.openFileDialog.Filter = "Comma Separated Value (*.csv)|*.csv|All Files (*.*)|*.*";
             this.openFileDialog.Title = "Open File";
             this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog_FileOk);
             // 
             // saveFileDialog
             // 
+            this.saveFileDialog.Filter = "Comma Separated Value (*.csv)|*.csv|All Files (*.*)|*.*";
             this.saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog_FileOk);
+            // 
+            // ignoreFirstLineCheckbox
+            // 
+            this.ignoreFirstLineCheckbox.AutoSize = true;
+            this.ignoreFirstLineCheckbox.Checked = true;
+            this.ignoreFirstLineCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ignoreFirstLineCheckbox.Location = new System.Drawing.Point(101, 70);
+            this.ignoreFirstLineCheckbox.Name = "ignoreFirstLineCheckbox";
+            this.ignoreFirstLineCheckbox.Size = new System.Drawing.Size(182, 21);
+            this.ignoreFirstLineCheckbox.TabIndex = 4;
+            this.ignoreFirstLineCheckbox.Text = "Ignore first line of input?";
+            this.ignoreFirstLineCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // separationCharacterTextbox
+            // 
+            this.separationCharacterTextbox.AcceptsTab = true;
+            this.separationCharacterTextbox.Location = new System.Drawing.Point(587, 68);
+            this.separationCharacterTextbox.MaxLength = 1;
+            this.separationCharacterTextbox.Name = "separationCharacterTextbox";
+            this.separationCharacterTextbox.Size = new System.Drawing.Size(100, 22);
+            this.separationCharacterTextbox.TabIndex = 4;
+            this.separationCharacterTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.separationCharacterTextbox.TextChanged += new System.EventHandler(this.separationCharacterTextbox_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(434, 71);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(147, 17);
+            this.label2.TabIndex = 1002;
+            this.label2.Text = "Separation Character:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 323);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.separationCharacterTextbox);
+            this.Controls.Add(this.ignoreFirstLineCheckbox);
             this.Controls.Add(this.setOutputFilenameButton);
             this.Controls.Add(this.outputFilenameTextbox);
             this.Controls.Add(this.label1);
@@ -163,6 +203,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.CheckBox ignoreFirstLineCheckbox;
+        private System.Windows.Forms.TextBox separationCharacterTextbox;
+        private System.Windows.Forms.Label label2;
     }
 }
 

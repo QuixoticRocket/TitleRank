@@ -13,11 +13,12 @@ namespace TitleRank
 {
     public partial class MainForm : Form
     {
-        private char seperator = ',';
+        private char separator = ',';
 
         public MainForm()
         {
             InitializeComponent();
+            separationCharacterTextbox.Text = separator.ToString();
         }
 
         private void processButton_Click(object sender, EventArgs e)
@@ -59,10 +60,6 @@ namespace TitleRank
                 //check if file exists (set openfiledialog)
                 openFileDialog.FileName = inputFilenameTextbox.Text;
             }
-            else
-            {
-                MessageBox.Show("File Does not exist", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
         }
 
         private void outputFilenameTextbox_Leave(object sender, EventArgs e)
@@ -79,6 +76,12 @@ namespace TitleRank
                 }
             }
             saveFileDialog.FileName = outputFilenameTextbox.Text;
+        }
+
+        private void separationCharacterTextbox_TextChanged(object sender, EventArgs e)
+        {
+            //update separation character
+            separator = separationCharacterTextbox.Text[0];
         }
     }
 }
