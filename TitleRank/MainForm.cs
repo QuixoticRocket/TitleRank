@@ -23,9 +23,38 @@ namespace TitleRank
 
         private void processButton_Click(object sender, EventArgs e)
         {
-            //open files (1 read 1 write)
+            outputTextBox.ResetText();
+            if(!File.Exists(inputFilenameTextbox.Text))
+            {
+                appendTextToUserLog("Input file does not exist. Aborting...");
+            }
 
+            if (File.Exists(outputFilenameTextbox.Text))
+            {
+                //show warning - if no to overwrite then open savefiledialog??
+                var confirmation = MessageBox.Show("This file already exists and will be overwritten." + Environment.NewLine + "Are you sure you want to do this?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (confirmation != DialogResult.OK)
+                {
+                    outputFilenameTextbox.Text = string.Empty;
+                    appendTextToUserLog("Output file already exists. User abort to prevent overwriting...");
+                    return;
+                }
+            }
+        
+
+            //open files (1 read 1 write)
+            FileStream inputfileStream = File.OpenRead(inputFilenameTextbox.Text);
+            FileStream outputfileStream;
+            if(appendToFileCheckbox.Checked)
+            {
+                outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Append, FileAccess.Write);
+            }
+            else
+            {
+                outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Create, FileAccess.Write);
+            }
             //process and output lines to output file, errors recorded in output textbox
+
             
         }
 
@@ -64,17 +93,6 @@ namespace TitleRank
 
         private void outputFilenameTextbox_Leave(object sender, EventArgs e)
         {
-            if(File.Exists(outputFilenameTextbox.Text))
-            {
-                //show warning - if no to overwrite then open savefiledialog??
-                var confirmation = MessageBox.Show("This file already exists and will be overwritten." + Environment.NewLine + "Are you sure you want to do this?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                if(confirmation != DialogResult.OK)
-                {
-                    outputFilenameTextbox.Text = string.Empty;
-                    saveFileDialog.ShowDialog();
-                    return;
-                }
-            }
             saveFileDialog.FileName = outputFilenameTextbox.Text;
         }
 
@@ -82,6 +100,12 @@ namespace TitleRank
         {
             //update separation character
             separator = separationCharacterTextbox.Text[0];
+        }
+
+        private void appendTextToUserLog(string text)
+        {
+            outputTextBox.AppendText(text);
+            outputTextBox.AppendText(Environment.NewLine);
         }
     }
 }
