@@ -10,7 +10,7 @@ namespace TitleRank
     internal class RowProcessor
     {
 
-        internal List<TitleRankNode> CreateGraphsFromInput(Stream inputStream, bool ignoreFirstLine, char splitChar, ref string outputText)
+        internal List<TitleRankNode> CreateGraphsFromInput(Stream inputStream, bool ignoreFirstLine, char splitChar, ref System.Windows.Forms.TextBox outputText)
         {
             //read all input into a list
             List<TitleRankNode> allNodes = new List<TitleRankNode>();
@@ -34,8 +34,7 @@ namespace TitleRank
 
                 if (splitString.Length != Shared.inputFieldCountPerRow)
                 {
-                    outputText += Shared.GetMalformedRowErrorText(rownumber, splitString.Length);
-                    outputText += Environment.NewLine;
+                    Shared.appendTextToTextbox(Shared.GetMalformedRowErrorText(rownumber, splitString.Length), outputText);
                 }
                 else
                 {
@@ -49,19 +48,40 @@ namespace TitleRank
             //order list by level, then url
             allNodes = allNodes.OrderBy(n => n.Level).ThenBy(n => n.Url).ToList();
 
-            //find home(s)
-            List<TitleRankNode> homeNodes = allNodes.Where(n => n.isHomeLevelNode).ToList();
-            //if there are no home level nodes then find lowest levels and they become home level nodes
-            if(homeNodes.Count == 0)
+            //go through each home item and see if we can find children, add them to the parent, then go through children finding children recursively until done
+            int currenttLevel = 1;
+            int maxlevel = allNodes.Select(n => n.Level).Max();
+            while(currenttLevel < maxlevel)
             {
-                int lowestLevel = allNodes.Select(n => n.Level).Min();
-                homeNodes = allNodes.Where(n => n.Level == lowestLevel).ToList();
+                int nextLevel = currenttLevel + 1;
+                //foreach node at current level, go through each node at next level and
+                foreach (var parent in allNodes.Where(x => x.Level == currenttLevel))
+                {
+                    foreach (var possibleChild in allNodes.Where(x => x.Level == nextLevel && x.Parent == null))
+                    {
+                        try
+                        {
+                            if (possibleChild.IsDirectChildOfUrl(parent.Url, parent.Level))
+                            {
+                                TitleRankNode child = allNodes.First(n => n == possibleChild);
+                                parent.AddChild(ref child);
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            //log and move on
+                            Shared.appendTextToTextbox(Shared.GetChildProcessingFailureMessage(parent.RowNumber, possibleChild.RowNumber, ex), outputText);
+                        }
+                    }
+                }
+                currenttLevel = nextLevel;
             }
-            allNodes.RemoveAll(x => homeNodes.Contains(x));
-
-            //go through each home item and see if we can find children, add them to the parent, remove them from allnodes, then go through children finding children recursively until done
 
             //check if there are any orphans... if so then link them directly under home
+            List<TitleRankNode> orphans = allNodes.Where(x => x.Parent == null && !x.isHomeLevelNode).ToList();
+            orphans.ForEach(x => x.IsOrphan = true);
+
+            return allNodes;
         }
     }
 }

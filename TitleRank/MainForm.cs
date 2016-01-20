@@ -26,7 +26,7 @@ namespace TitleRank
             outputTextBox.ResetText();
             if(!File.Exists(inputFilenameTextbox.Text))
             {
-                appendTextToUserLog("Input file does not exist. Aborting...");
+                Shared.appendTextToTextbox("Input file does not exist. Aborting...", outputTextBox);
             }
 
             if (!appendToFileCheckbox.Checked && File.Exists(outputFilenameTextbox.Text))
@@ -36,7 +36,7 @@ namespace TitleRank
                 if (confirmation != DialogResult.OK)
                 {
                     outputFilenameTextbox.Text = string.Empty;
-                    appendTextToUserLog("Output file already exists. User abort to prevent overwriting...");
+                    Shared.appendTextToTextbox("Output file already exists. User abort to prevent overwriting...", outputTextBox);
                     return;
                 }
             }
@@ -45,13 +45,16 @@ namespace TitleRank
             //open read file
             FileStream inputfileStream = File.OpenRead(inputFilenameTextbox.Text);
 
+            RowProcessor processor = new RowProcessor();
+            List<TitleRankNode> nodes = processor.CreateGraphsFromInput(inputfileStream, ignoreFirstLineCheckbox.Checked, separator, ref outputTextBox);
 
-
-            //read in data
-
-            //process data and get result
+            if(inputfileStream != null)
+            {
+                inputfileStream.Dispose();
+            }
 
             //write data to file
+            nodes = nodes.OrderBy(n => n.Id).ToList();
 
             //open write file
             FileStream outputfileStream;
@@ -64,25 +67,55 @@ namespace TitleRank
                 outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Create, FileAccess.Write);
             }
 
-            
+            StreamWriter writer = new StreamWriter(outputfileStream);
 
-            //process and output lines to return, errors recorded in output textbox (and continue on)
+            int maxlevel = nodes.Select(x => x.Level).Max();
+            StringBuilder sb = new StringBuilder();
 
-            //track maximum number of ranks found
-            //track line number for error reporting
-
-            if (ignoreFirstLineCheckbox.Checked)
+            //header
+            sb.Append(Shared.IdHeading);
+            sb.Append(separator);
+            //levels
+            for (int i = 1; i <= maxlevel; i++)
             {
-                //read first line and ignore it
+                sb.Append(Shared.LevelPartialHeading + i.ToString());
+                sb.Append(separator);
+            }
+            sb.Append(Shared.CurrentUrlHeading);
+            sb.Append(separator);
+
+            writer.WriteLine(sb.ToString());
+            sb.Clear();
+
+            //for each node
+            foreach (var node in nodes)
+            {
+                sb.Append(node.Id);
+                sb.Append(separator);
+                //levels
+                for (int i = 1; i <= maxlevel; i++)
+                {
+                    if(i == node.Level)
+                    {
+                        sb.Append(node.Title);
+                    }
+                    sb.Append(separator);
+                }
+                sb.Append(node.Url);
+                sb.Append(separator);
+
+                writer.WriteLine(sb.ToString());
+                sb.Clear();
             }
 
-            //while not end of file read a line, process it, save the result
-
-            //insert header to return at end with the longest rank
-
+            //close file stream
+            writer.Close();
+            if(writer != null)
+            {
+                writer.Dispose();
+            }
         }
 
-        private 
 
         private void openFileDialog_FileOk(object sender, CancelEventArgs e)
         {
@@ -126,12 +159,6 @@ namespace TitleRank
         {
             //update separation character
             separator = separationCharacterTextbox.Text[0];
-        }
-
-        private void appendTextToUserLog(string text)
-        {
-            outputTextBox.AppendText(text);
-            outputTextBox.AppendText(Environment.NewLine);
         }
     }
 }
