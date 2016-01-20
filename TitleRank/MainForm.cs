@@ -24,7 +24,7 @@ namespace TitleRank
         private void processButton_Click(object sender, EventArgs e)
         {
             outputTextBox.ResetText();
-            if(!File.Exists(inputFilenameTextbox.Text))
+            if (!File.Exists(inputFilenameTextbox.Text))
             {
                 Shared.appendTextToTextbox("Input file does not exist. Aborting...", outputTextBox);
             }
@@ -40,15 +40,23 @@ namespace TitleRank
                     return;
                 }
             }
-        
 
             //open read file
-            FileStream inputfileStream = File.OpenRead(inputFilenameTextbox.Text);
+            FileStream inputfileStream;
+            try
+            {
+                inputfileStream = File.OpenRead(inputFilenameTextbox.Text);
+            }
+            catch (Exception ex)
+            {
+                Shared.appendTextToTextbox("Exception opening file to read." + Environment.NewLine + "Exception Message: " + ex.Message, outputTextBox);
+                return;
+            }
 
             RowProcessor processor = new RowProcessor();
             List<TitleRankNode> nodes = processor.CreateGraphsFromInput(inputfileStream, ignoreFirstLineCheckbox.Checked, separator, ref outputTextBox);
 
-            if(inputfileStream != null)
+            if (inputfileStream != null)
             {
                 inputfileStream.Dispose();
             }
@@ -58,15 +66,22 @@ namespace TitleRank
 
             //open write file
             FileStream outputfileStream;
-            if (appendToFileCheckbox.Checked)
+            try
             {
-                outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Append, FileAccess.Write);
+                if (appendToFileCheckbox.Checked)
+                {
+                    outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Append, FileAccess.Write);
+                }
+                else
+                {
+                    outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Create, FileAccess.Write);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                outputfileStream = File.Open(outputFilenameTextbox.Text, FileMode.Create, FileAccess.Write);
+                Shared.appendTextToTextbox("Exception opening output file." + Environment.NewLine + "Exception Message: " + ex.Message, outputTextBox);
+                return;
             }
-
             StreamWriter writer = new StreamWriter(outputfileStream);
 
             int maxlevel = nodes.Select(x => x.Level).Max();
@@ -95,7 +110,7 @@ namespace TitleRank
                 //levels
                 for (int i = 1; i <= maxlevel; i++)
                 {
-                    if(i == node.Level)
+                    if (i == node.Level)
                     {
                         sb.Append(node.Title);
                     }
@@ -110,10 +125,12 @@ namespace TitleRank
 
             //close file stream
             writer.Close();
-            if(writer != null)
+            if (writer != null)
             {
                 writer.Dispose();
             }
+
+            Shared.appendTextToTextbox("- - - Done - - - ", outputTextBox);
         }
 
 

@@ -48,20 +48,50 @@ namespace TitleRank
             //order list by level, then url
             allNodes = allNodes.OrderBy(n => n.Level).ThenBy(n => n.Url).ToList();
 
+            int homeCount = 1;
+            foreach (var homenode in allNodes.Where(x => x.isHomeLevelNode))
+            {
+                homenode.Id = homeCount.ToString();
+                homeCount++;
+            }
+
+
             //go through each home item and see if we can find children, add them to the parent, then go through children finding children recursively until done
+
+            //attach level 1s to home nodes (which are also sorta level 1s)
+            foreach (var homeparent in allNodes.Where(x => x.isHomeLevelNode))
+            {
+                foreach (var possibleChild in allNodes.Where(x => x.Level == 1 && !x.isHomeLevelNode))
+                {
+                    try
+                    {
+                        if (possibleChild.IsDirectChildOfUrl(homeparent))
+                        {
+                            TitleRankNode child = allNodes.First(n => n == possibleChild);
+                            homeparent.AddChild(ref child, homeCount);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //log and move on
+                        Shared.appendTextToTextbox(Shared.GetChildProcessingFailureMessage(homeparent.RowNumber, possibleChild.RowNumber, ex), outputText);
+                    }
+                }
+            }
+
             int currenttLevel = 1;
             int maxlevel = allNodes.Select(n => n.Level).Max();
             while(currenttLevel < maxlevel)
             {
                 int nextLevel = currenttLevel + 1;
                 //foreach node at current level, go through each node at next level and
-                foreach (var parent in allNodes.Where(x => x.Level == currenttLevel))
+                foreach (var parent in allNodes.Where(x => !x.isHomeLevelNode && x.Level == currenttLevel))
                 {
                     foreach (var possibleChild in allNodes.Where(x => x.Level == nextLevel && x.Parent == null))
                     {
                         try
                         {
-                            if (possibleChild.IsDirectChildOfUrl(parent.Url, parent.Level))
+                            if (possibleChild.IsDirectChildOfUrl(parent))
                             {
                                 TitleRankNode child = allNodes.First(n => n == possibleChild);
                                 parent.AddChild(ref child);

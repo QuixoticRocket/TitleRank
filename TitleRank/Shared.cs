@@ -14,8 +14,8 @@ namespace TitleRank
         internal static readonly char Whack = '/';
         internal static readonly string OrphanId = "Orphan Row";
         internal static readonly int inputFieldCountPerRow = 2;
-        internal static readonly int TitleFieldNumber = 0;
-        internal static readonly int UrlFieldNumber = 1;
+        internal static readonly int TitleFieldNumber = 1;
+        internal static readonly int UrlFieldNumber = 0;
         internal static readonly string IdHeading = "ID";
         internal static readonly string LevelPartialHeading = "Level "; //note the space.. we expect a number to be appended
         internal static readonly string CurrentUrlHeading = "Current URL";
